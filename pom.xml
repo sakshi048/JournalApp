@@ -15,6 +15,8 @@
 	<description>E2EE Journal App</description>
 	<properties>
 		<java.version>11</java.version>
+		<sonar.organization>sakshi048</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -70,5 +72,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
+
 
 </project>
