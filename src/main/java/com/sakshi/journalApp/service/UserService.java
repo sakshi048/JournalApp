@@ -18,12 +18,19 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
 
-    public void saveNewUser(Users user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList("USER"));
-        userRepository.save(user);
+
+    public boolean saveNewUser(Users user) {
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(Arrays.asList("USER"));
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            log.error("Error occurred for: {}",user.getUsername(),e);
+            return false;
+        }
+
     }
 
     public void saveUser(Users user) {
