@@ -1,5 +1,6 @@
 package com.sakshi.journalApp.controller;
 
+import com.sakshi.journalApp.cache.AppCache;
 import com.sakshi.journalApp.entity.Users;
 import com.sakshi.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AppCache appCache;
+
     @GetMapping("/all-users")
     public ResponseEntity<?> getAllUsers() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -30,5 +34,10 @@ public class AdminController {
     @PostMapping("/create-admin-user")
     public void createAdminUser(@RequestBody Users user) {
         userService.saveAdmin(user);
+    }
+
+    @GetMapping("/clear-app-cache")
+    public void clearAppCache() {
+        appCache.init();
     }
 }

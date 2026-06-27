@@ -32,8 +32,8 @@ public class UserServiceTests {
 
     @AfterEach
     void cleanUp() {
-        userRepository.deleteUsername("sakusaa");
-        userRepository.deleteUsername("gharat");
+        userRepository.deleteByUsername("sakusaa");
+        userRepository.deleteByUsername("gharat");
     }
 
     @ParameterizedTest
