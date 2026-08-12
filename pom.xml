@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -32,7 +32,7 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-        <dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -41,18 +41,35 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
+
+		<!-- Redis disabled for now (no local Redis / Docker available).
+		     RedisConfig, RedisService, AppCache classes are commented out in code.
+		     Re-enable this dependency + those classes when Redis is set up. -->
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
+		-->
+
+		<!-- Cache starter kept commented too since it was only backing the Redis-based AppCache -->
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
+		-->
+
+		<!-- Kafka disabled for now (no local Kafka broker available).
+		     KafkaProducerService, KafkaConsumerService, KafkaTestController are commented out in code.
+		     Re-enable this dependency + those classes when Kafka is set up. -->
+		<!--
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
+		-->
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -79,6 +96,15 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.7.0</version>
+		</dependency>
+
+		<!-- Resend: HTTP-based transactional email API. Used instead of SMTP
+		     because Render (and most free-tier PaaS) block/throttle SMTP ports,
+		     making Gmail SMTP unreliable in production. -->
+		<dependency>
+			<groupId>com.resend</groupId>
+			<artifactId>resend-java</artifactId>
+			<version>3.1.0</version>
 		</dependency>
 
 	</dependencies>
@@ -109,7 +135,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
 
 </project>

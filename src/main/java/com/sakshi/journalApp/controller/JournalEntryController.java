@@ -81,8 +81,7 @@ public class JournalEntryController {
     }
 
     @PutMapping("id/{myId}")
-    public ResponseEntity<?> updateJournalByID(@PathVariable ObjectId myId, @RequestBody JournalEntry newEntry)
-    {
+    public ResponseEntity<?> updateJournalByID(@PathVariable ObjectId myId, @RequestBody JournalEntry newEntry) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Users user = userService.findByUsername(username);
@@ -90,13 +89,70 @@ public class JournalEntryController {
         if (!collect.isEmpty()) {
             Optional<JournalEntry> journalEntry = journalEntryService.findById(myId);
             if (journalEntry.isPresent()) {
-                   JournalEntry old = journalEntry.get();
-                    old.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : old.getTitle());
-                    old.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : old.getContent());
-                    journalEntryService.saveEntry(old);
-                    return new ResponseEntity<>(old, HttpStatus.OK);
+                JournalEntry old = journalEntry.get();
+                old.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : old.getTitle());
+                old.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : old.getContent());
+                old.setTags(newEntry.getTags() != null ? newEntry.getTags() : old.getTags());
+                journalEntryService.saveEntry(old);
+                return new ResponseEntity<>(old, HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<?> getStats() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            Users user = userService.findByUsername(username);
+            List<JournalEntry> entries = user.getJournalEntries();
+
+            java.util.Map<String, Object> stats = new java.util.HashMap<>();
+            stats.put("totalEntries", entries != null ? entries.size() : 0);
+            stats.put("thisMonth", entries != null ?
+                    entries.stream()
+                            .filter(e -> e.getDate() != null &&
+                                         e.getDate().getMonth() == java.time.LocalDate.now().getMonth() &&
+                                         e.getDate().getYear() == java.time.LocalDate.now().getYear())
+                            .count() : 0);
+            java.util.Map<String, Long> moodDistribution = entries != null ?
+                    entries.stream()
+                            .filter(e -> e.getSentiment() != null)
+                            .collect(java.util.stream.Collectors.groupingBy(
+                                    e -> e.getSentiment().name(),
+                                    java.util.stream.Collectors.counting()))
+                    : java.util.Map.of();
+            stats.put("moodDistribution", moodDistribution);
+
+            java.util.Map<String, Long> topThemes = entries != null ?
+                    entries.stream()
+                            .filter(e -> e.getTags() != null)
+                            .flatMap(e -> e.getTags().stream())
+                            .collect(java.util.stream.Collectors.groupingBy(
+                                    tag -> tag,
+                                    java.util.stream.Collectors.counting()))
+                    : java.util.Map.of();
+            stats.put("topThemes", topThemes);
+
+            return new ResponseEntity<>(stats, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{myId}")
+    public ResponseEntity<JournalEntry> getJournalByIDAlternate(@PathVariable ObjectId myId) {
+        return getJournalByID(myId);
+    }
+
+    @DeleteMapping("/{myId}")
+    public ResponseEntity<?> deleteJournalByIDAlternate(@PathVariable ObjectId myId) {
+        return deleteJournalByID(myId);
+    }
+
+    @PutMapping("/{myId}")
+    public ResponseEntity<?> updateJournalByIDAlternate(@PathVariable ObjectId myId, @RequestBody JournalEntry newEntry) {
+        return updateJournalByID(myId, newEntry);
     }
 }

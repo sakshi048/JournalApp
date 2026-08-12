@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 
 @Configuration
@@ -28,10 +29,14 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtFilter jwtFilter;
 
+    @Autowired
+    private CorsConfigurationSource corsConfigurationSource;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/journal/**","/user/**").authenticated()
+        http.cors().configurationSource(corsConfigurationSource).and()
+                .authorizeRequests()
+                .antMatchers("/journal/**","/user/**","/habit/**").authenticated()                .antMatchers("/journal/public/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().csrf().disable();

@@ -24,7 +24,7 @@ public class JournalEntryService {
 
     // Logback private static final Logger logger = LoggerFactory.getLogger(JournalEntryService.class);
 
-    @Transactional
+//    @Transactional
     public void saveEntry(JournalEntry journalEntry, String username) {
         try {
             Users user = userService.findByUsername(username);
@@ -50,7 +50,7 @@ public class JournalEntryService {
         return journalEntryRepository.findById(id);
     }
 
-    @Transactional
+//    @Transactional
     public boolean deleteById(ObjectId id, String username) {
         boolean removed = false;
         try {

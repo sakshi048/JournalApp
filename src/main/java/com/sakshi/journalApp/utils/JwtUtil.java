@@ -3,6 +3,7 @@ package com.sakshi.journalApp.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -12,11 +13,10 @@ import java.util.Map;
 
     @Component
     public class JwtUtil {
-
-        private String SECRET_KEY = "TaK+HaV^uvCHEFsEVfypW#7g9^k*Z8$V";
-
+        @Value("${jwt.secret}")
+        private String secretString;
         private SecretKey getSigningKey() {
-            return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+            return Keys.hmacShaKeyFor(secretString.getBytes());
         }
 
         public String extractUsername(String token) {
@@ -52,7 +52,7 @@ import java.util.Map;
                     .header().empty().add("typ","JWT")
                     .and()
                     .issuedAt(new Date(System.currentTimeMillis()))
-                    .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 5 minutes expiration time
+                    .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration time
                     .signWith(getSigningKey())
                     .compact();
         }

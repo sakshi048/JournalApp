@@ -29,5 +29,7 @@ public class Users {
     private String password;
     @DBRef
     private List<JournalEntry> journalEntries = new ArrayList<>();
+    @DBRef
+    private List<Habit> habits = new ArrayList<>();
     private List<String> roles;
 }

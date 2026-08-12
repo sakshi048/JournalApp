@@ -2,11 +2,10 @@
 
 package com.sakshi.journalApp.controller;
 
-import com.sakshi.journalApp.api.response.WeatherResponse;
 import com.sakshi.journalApp.entity.Users;
 import com.sakshi.journalApp.repository.UserRepository;
 import com.sakshi.journalApp.service.UserService;
-import com.sakshi.journalApp.service.WeatherService;
+//import com.sakshi.journalApp.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +24,22 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private WeatherService weatherService;
+//    @Autowired
+//    private WeatherService weatherService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;   // ADD THIS
+
+    @GetMapping
+    public ResponseEntity<?> getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Users user = userService.findByUsername(username);
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody Users user) {
@@ -56,14 +66,14 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping
-    public ResponseEntity<?> greetings() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        WeatherResponse weatherResponse = weatherService.getWeather("Mumbai");
-        String greetings = "";
-        if (weatherResponse != null) {
-            greetings = ", Weather feels like: " + weatherResponse.getCurrent().getFeelslike();
-        }
-        return new ResponseEntity<>("Hi " + authentication.getName() + greetings, HttpStatus.OK);
-    }
+//    @GetMapping
+//    public ResponseEntity<?> greetings() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        WeatherResponse weatherResponse = weatherService.getWeather("Mumbai");
+//        String greetings = "";
+//        if (weatherResponse != null) {
+//            greetings = ", Weather feels like: " + weatherResponse.getCurrent().getFeelslike();
+//        }
+//        return new ResponseEntity<>("Hi " + authentication.getName() + greetings, HttpStatus.OK);
+//    }
 }
