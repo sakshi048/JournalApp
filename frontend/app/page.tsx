@@ -408,11 +408,11 @@ export default function Page() {
   }
 
   const content =
-    view === 'today' ? <Today entries={entries} habits={habits} setView={setView} openEntry={setSelected} loading={loading} /> :
-    view === 'journal' ? <Journal entries={entries} refresh={loadAll} loading={loading} /> :
-    view === 'habits' ? <Habits habits={habits} refresh={loadAll} loading={loading} /> :
-    view === 'insights' ? <Insights entries={entries} habits={habits} stats={stats} loading={loading} /> :
-    <Profile username={username} onLogout={handleLogout} />
+      view === 'today' ? <Today entries={entries} habits={habits} setView={setView} openEntry={setSelected} loading={loading} /> :
+          view === 'journal' ? <Journal entries={entries} refresh={loadAll} loading={loading} /> :
+              view === 'habits' ? <Habits habits={habits} refresh={loadAll} loading={loading} /> :
+                  view === 'insights' ? <Insights entries={entries} habits={habits} stats={stats} loading={loading} /> :
+                      <Profile username={username} onLogout={handleLogout} />
 
   return <Shell view={view} setView={setView} username={username} onLogout={handleLogout}>
     {selected && <EntryModal entry={selected} close={() => setSelected(null)} />}
